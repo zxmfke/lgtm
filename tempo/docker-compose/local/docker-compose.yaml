@@ -1,0 +1,44 @@
+version: "3"
+services:
+
+  tempo:
+    image: grafana/tempo:2.2.1
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    volumes:
+      - ./tempo.yaml:/etc/tempo.yaml
+      - ./tempo-data:/tmp/tempo
+    ports:
+      - "14268:14268"  # jaeger ingest
+      - "3200:3200"    # tempo
+      - "9095:9095"    # tempo grpc
+      - "4317:4317"    # otlp grpc
+      - "4318:4318"    # otlp http
+      - "9411:9411"    # zipkin
+
+  k6-tracing:
+    image: ghcr.io/grafana/xk6-client-tracing:v0.0.2
+    environment:
+      - ENDPOINT=tempo:4317
+    restart: always
+    depends_on:
+      - tempo
+
+  prometheus:
+    image: prom/prometheus:v2.46.0
+    command:
+      - --config.file=/etc/prometheus.yaml
+      - --web.enable-remote-write-receiver
+      - --enable-feature=exemplar-storage
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus.yaml
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:10.1.0
+    volumes:
+      - ./grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+    environment:
+      - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor
+    ports:
+      - "3000:3000"
