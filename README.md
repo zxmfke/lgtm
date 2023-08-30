@@ -7,3 +7,7 @@ LGTM可观测性实战
 
 以输出文档详见：
 
+#### Tempo
+
+1. [【GO】LGTM_Grafana_Tempo_(1)_架构](https://blog.csdn.net/weixin_40242845/article/details/132549834?spm=1001.2014.3001.5502)
+2. [【GO】LGTM_Grafana_Tempo(2) --- 官方用例改后实操](https://blog.csdn.net/weixin_40242845/article/details/132588678?spm=1001.2014.3001.5502)
