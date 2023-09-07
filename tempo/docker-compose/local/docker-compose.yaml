@@ -1,12 +1,17 @@
 version: "3"
-services:
 
+networks:
+  grafana-net:
+    driver: bridge
+
+services:
   tempo:
     image: grafana/tempo:2.2.1
+    networks:
+      - grafana-net
     command: [ "-config.file=/etc/tempo.yaml" ]
     volumes:
       - ./tempo.yaml:/etc/tempo.yaml
-      - ./tempo-data:/tmp/tempo
     ports:
       - "14268:14268"  # jaeger ingest
       - "3200:3200"    # tempo
@@ -17,6 +22,8 @@ services:
 
   k6-tracing:
     image: ghcr.io/grafana/xk6-client-tracing:v0.0.2
+    networks:
+      - grafana-net
     environment:
       - ENDPOINT=tempo:4317
     restart: always
@@ -25,6 +32,8 @@ services:
 
   prometheus:
     image: prom/prometheus:v2.46.0
+    networks:
+      - grafana-net
     command:
       - --config.file=/etc/prometheus.yaml
       - --web.enable-remote-write-receiver
@@ -36,6 +45,8 @@ services:
 
   grafana:
     image: grafana/grafana:10.1.0
+    networks:
+      - grafana-net
     volumes:
       - ./grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
     environment:
