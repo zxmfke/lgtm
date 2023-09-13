@@ -1,0 +1,14 @@
+Name: user.rpc
+ListenOn: 127.0.0.1:8080
+
+Log:
+  Mode: console
+  TimeFormat: 2006-01-02 15:04:05.00000
+  Encoding: json
+  Path: /app/logs
+  Compress: true
+
+Telemetry:
+  Name: "user"
+  Endpoint: "127.0.0.1:4318"
+  Batcher: "otlphttp"
