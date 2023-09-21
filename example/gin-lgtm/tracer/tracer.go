@@ -77,7 +77,6 @@ func tracerProvider(c Config) error {
 }
 
 func createExporter(c Config) (tracesdk.SpanExporter, error) {
-	// Just support jaeger and zipkin now, more for later
 	switch c.Batcher {
 	case kindZipKin:
 		return zipkin.New(c.Endpoint)
